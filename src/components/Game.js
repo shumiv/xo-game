@@ -10,7 +10,8 @@ export class Game extends React.Component {
                 squares: Array(9).fill(null)
             }],
             stepNumber: 0,
-            nextPlayer: "X"
+            nextPlayer: "X",
+            sort: "asc"
         }
     }
 
@@ -27,7 +28,8 @@ export class Game extends React.Component {
         this.setState({
             history: history.concat([{squares: squares}]),
             stepNumber: history.length,
-            nextPlayer: this._getNextPlayer()
+            nextPlayer: this._getNextPlayer(),
+            sort: this.state.sort
         });
     }
 
@@ -39,7 +41,8 @@ export class Game extends React.Component {
     }
 
     _getMoves(history) {
-        return history.map((step, move, history) => {
+        history = history.slice();
+        const moves = history.map((step, move, history) => {
             const pos = this._getPosition(move, history);
             const player = ((move % 2) === 0) ? "O" : "X";
             const desc = move
@@ -49,6 +52,8 @@ export class Game extends React.Component {
                 <li key={move}><button onClick={() => this._jumpTo(move)}>{desc}</button></li>
             );
         });
+        if (this.state.sort === "desc") moves.reverse();
+        return moves;
     }
 
     _getPosition(move, history) {
@@ -71,6 +76,13 @@ export class Game extends React.Component {
         return coordinates[index];
     }
 
+    _sort() {
+        const state = Object.assign({}, this.state);
+        const sort = this.state.sort;
+        state.sort = (sort === "asc") ? "desc" : "asc";
+        this.setState(state);
+    }
+
     render() {
         const history = this.state.history;
         const current = history[this.state.stepNumber];
@@ -89,6 +101,7 @@ export class Game extends React.Component {
                 </div>
                 <div className="game-info">
                     <div>{status}</div>
+                    <button onClick={() => this._sort()}>Sort "{this.state.sort}"</button>
                     <ol>{moves}</ol>
                 </div>
             </div>
