@@ -38,20 +38,45 @@ export class Game extends React.Component {
         });
     }
 
+    _getMoves(history) {
+        return history.map((step, move, history) => {
+            const pos = this._getPosition(move, history);
+            const player = ((move % 2) === 0) ? "O" : "X";
+            const desc = move
+                ? 'Go to move #' + move  + ' (' + player + ' ' + pos + ')'
+                : 'Go to game start';
+            return (
+                <li key={move}><button onClick={() => this._jumpTo(move)}>{desc}</button></li>
+            );
+        });
+    }
+
+    _getPosition(move, history) {
+        if (! move) return null;
+        const current = history[move].squares;
+        const previous = history[move - 1].squares;
+        const step = this._getStep(current, previous);
+        return this._getCoordinates(step);
+    }
+
+    _getStep(current, previous) {
+        for (let i = 0; i < current.length; i++) {
+            if (current[i] !== previous[i]) return i;
+        }
+        return null;
+    }
+
+    _getCoordinates(index) {
+        const coordinates = ["1:1", "1:2", "1:3", "2:1", "2:2", "2:3", "3:1", "3:2", "3:3"];
+        return coordinates[index];
+    }
+
     render() {
         const history = this.state.history;
         const current = history[this.state.stepNumber];
         const squares = current.squares.slice();
         const winner = calculateWinner(squares);
-
-        const moves = history.map((step, move) => {
-           const desc = move
-               ? 'Go to move #' + move
-               : 'Go to game start';
-           return (
-               <li key={move}><button onClick={() => this._jumpTo(move)}>{desc}</button></li>
-           );
-        });
+        const moves = this._getMoves(history);
 
         const status = winner ? `Player ${winner} won` : `Next player: ${this.state.nextPlayer}`;
         return (
