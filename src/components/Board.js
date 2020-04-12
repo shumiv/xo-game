@@ -3,7 +3,7 @@ import {Square} from "./Square";
 
 export class Board extends React.Component {
 
-    renderSquare(i) {
+    _renderSquare(i) {
         return (
             <Square
                 value={this.props.squares[i]}
@@ -12,25 +12,20 @@ export class Board extends React.Component {
         );
     }
 
+    _renderBoard(width, height) {
+        const board = [];
+        for (let i = 0, index = 0; i < width; i++) {
+            const row = [];
+            for (let j = 0; j < height; j++) {
+                row.push(this._renderSquare(index++));
+            }
+            board.push(<div className="board-row">{row}</div>);
+        }
+        return board;
+    }
+
     render() {
-        return (
-            <div>
-                <div className="board-row">
-                    {this.renderSquare(0)}
-                    {this.renderSquare(1)}
-                    {this.renderSquare(2)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(3)}
-                    {this.renderSquare(4)}
-                    {this.renderSquare(5)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(6)}
-                    {this.renderSquare(7)}
-                    {this.renderSquare(8)}
-                </div>
-            </div>
-        );
+        const board = this._renderBoard(3, 3);
+        return <div>{board}</div>;
     }
 }
