@@ -3,9 +3,10 @@ import {Square} from "./Square";
 
 export class Board extends React.Component {
 
-    _renderSquare(i) {
+    _renderSquare(i, isWinnerSquare = false) {
         return (
             <Square
+                isWinnerSquare={isWinnerSquare}
                 value={this.props.squares[i]}
                 onClick={() => this.props.onClick(i)}
             />
@@ -17,7 +18,10 @@ export class Board extends React.Component {
         for (let i = 0, index = 0; i < width; i++) {
             const row = [];
             for (let j = 0; j < height; j++) {
-                row.push(this._renderSquare(index++));
+                const isWinnerSquare = this.props.winnerSquares
+                    ? this.props.winnerSquares.includes(index)
+                    : false;
+                row.push(this._renderSquare(index++, isWinnerSquare));
             }
             board.push(<div className="board-row">{row}</div>);
         }

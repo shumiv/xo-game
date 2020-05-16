@@ -23,7 +23,7 @@ export class Game extends React.Component {
         const history = this.state.history.slice(0, this.state.stepNumber + 1);
         const current = history[history.length - 1];
         const squares = current.squares.slice();
-        if (calculateWinner(squares) || squares[index]) return;
+        if (calculateWinner(squares)[0] || squares[index]) return;
         squares[index] = this.state.nextPlayer;
         this.setState({
             history: history.concat([{squares: squares}]),
@@ -102,7 +102,7 @@ export class Game extends React.Component {
         const history = this.state.history;
         const current = history[this.state.stepNumber];
         const squares = current.squares.slice();
-        const winner = calculateWinner(squares);
+        const [winner, winnerSquares] = calculateWinner(squares);
         const moves = this._getMoves(history);
 
         const status = this._getStatus(winner, squares);
@@ -110,6 +110,7 @@ export class Game extends React.Component {
             <div className="game">
                 <div className="game-board">
                     <Board
+                        winnerSquares={winnerSquares}
                         squares={current.squares}
                         onClick={(i) => this._handleClick(i)}
                     />
