@@ -83,6 +83,21 @@ export class Game extends React.Component {
         this.setState(state);
     }
 
+    _getStatus(winner, squares) {
+        return winner
+            ? `Player ${winner} won`
+            : this._isThereEmptySquare(squares)
+                ? `Next player: ${this.state.nextPlayer}`
+                : `Drawn game`;
+    }
+
+    _isThereEmptySquare(squares) {
+        for (let i = 0; i < squares.length; i++) {
+            if (! squares[i]) return true;
+        }
+        return false;
+    }
+
     render() {
         const history = this.state.history;
         const current = history[this.state.stepNumber];
@@ -90,7 +105,7 @@ export class Game extends React.Component {
         const winner = calculateWinner(squares);
         const moves = this._getMoves(history);
 
-        const status = winner ? `Player ${winner} won` : `Next player: ${this.state.nextPlayer}`;
+        const status = this._getStatus(winner, squares);
         return (
             <div className="game">
                 <div className="game-board">
